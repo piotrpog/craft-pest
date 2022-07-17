@@ -73,7 +73,7 @@ trait RefreshesDatabase {
     protected function projectConfigApply()
     {
         $process = new Process(['./craft', 'project-config/apply', '--force']);
-        $process->setTty(true);
+        $process->setTty(false);
         $process->setTimeout(null);
         $process->start();
 

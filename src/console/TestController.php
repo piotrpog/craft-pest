@@ -4,6 +4,7 @@ namespace markhuot\craftpest\console;
 
 use craft\console\Controller;
 use Symfony\Component\Process\Process;
+use Craft;
 
 class TestController extends Controller {
 
@@ -13,6 +14,7 @@ class TestController extends Controller {
     function actionIndex() {
         $this->runInit();
         $this->runTests();
+        return 1;
     }
 
     /**
@@ -20,6 +22,7 @@ class TestController extends Controller {
      */
     function actionInit() {
         $this->runInit();
+        return 1;
     }
 
     /**
@@ -28,7 +31,7 @@ class TestController extends Controller {
     protected function runInit() {
         if (!file_exists(CRAFT_BASE_PATH . '/phpunit.xml')) {
             $process = new Process(['./vendor/bin/pest', '--init']);
-            $process->setTty(true);
+            $process->setTty(false);
             $process->start();
 
             foreach ($process as $type => $data) {
@@ -39,9 +42,10 @@ class TestController extends Controller {
                 }
             }
 
-            copy(__DIR__ . DIRECTORY_SEPARATOR . '../../stubs/init/ExampleTest.php', './tests/ExampleTest.php');
-            copy(__DIR__ . DIRECTORY_SEPARATOR . '../../stubs/init/Pest.php', './tests/Pest.php');
+            copy(__DIR__ . DIRECTORY_SEPARATOR . '../../stubs/init/ExampleTest.php', Craft::getAlias('@root') . '/tests/ExampleTest.php');
+            copy(__DIR__ . DIRECTORY_SEPARATOR . '../../stubs/init/Pest.php', Craft::getAlias('@root') . '/tests/Pest.php');
         }
+        
     }
 
     /**
@@ -49,7 +53,7 @@ class TestController extends Controller {
      */
     protected function runTests() {
         $process = new Process(['./vendor/bin/pest']);
-        $process->setTty(true);
+        $process->setTty(false);
         $process->setTimeout(null);
         $process->start();
 
@@ -61,5 +65,6 @@ class TestController extends Controller {
             }
         }
     }
+
 
 }
